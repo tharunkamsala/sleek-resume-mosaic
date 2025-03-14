@@ -147,6 +147,22 @@
   }
   
   .skill-pill {
-    @apply px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-sm font-medium transition-all duration-300 hover:bg-primary/10 hover:text-primary;
+    @apply px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-sm font-medium transition-all duration-300 hover:bg-primary/10 hover:text-primary flex items-center;
+  }
+
+  .hover-scale {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+
+  .tech-card {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50 p-4 rounded-xl flex items-center gap-3 hover:shadow-md hover:border-primary/20 transition-all duration-300;
+  }
+
+  .skill-icon {
+    @apply text-2xl;
+  }
+
+  .glow-on-hover {
+    @apply hover:shadow-lg hover:shadow-primary/10 transition-all duration-500;
   }
 }

@@ -5,7 +5,11 @@ import { Card, CardContent } from "@/components/ui/card";
 
 interface SkillCategory {
   title: string;
-  skills: string[];
+  emoji: string;
+  skills: Array<{
+    name: string;
+    icon: string;
+  }>;
 }
 
 const SkillsSection: React.FC = () => {
@@ -34,23 +38,54 @@ const SkillsSection: React.FC = () => {
   const skillCategories: SkillCategory[] = [
     {
       title: "Programming Languages",
-      skills: ["Python", "Java", "JavaScript", "TypeScript"],
+      emoji: "💻",
+      skills: [
+        { name: "Python", icon: "🐍" },
+        { name: "Java", icon: "☕" },
+        { name: "JavaScript", icon: "📜" },
+        { name: "TypeScript", icon: "🔷" },
+      ],
     },
     {
       title: "Web Technologies",
-      skills: ["React.js", "Spring Boot", "Node.js", "REST API", "HTML/CSS", "Express.js"],
+      emoji: "🌐",
+      skills: [
+        { name: "React.js", icon: "⚛️" },
+        { name: "Spring Boot", icon: "🍃" },
+        { name: "Node.js", icon: "🟢" },
+        { name: "REST API", icon: "🔄" },
+        { name: "HTML/CSS", icon: "🎨" },
+        { name: "Express.js", icon: "🚂" },
+      ],
     },
     {
       title: "Databases",
-      skills: ["MySQL", "MongoDB", "JDBC", "IBM DB2"],
+      emoji: "🗄️",
+      skills: [
+        { name: "MySQL", icon: "🐬" },
+        { name: "MongoDB", icon: "🍃" },
+        { name: "JDBC", icon: "🔌" },
+        { name: "IBM DB2", icon: "💾" },
+      ],
     },
     {
       title: "Cloud Technologies",
-      skills: ["AWS", "IBM Cloud Pak"],
+      emoji: "☁️",
+      skills: [
+        { name: "AWS", icon: "🌩️" },
+        { name: "IBM Cloud Pak", icon: "☁️" },
+      ],
     },
     {
       title: "Tools & Technologies",
-      skills: ["Git", "GitHub", "Informatica PowerCenter", "ETL", "JSON Processing"],
+      emoji: "🛠️",
+      skills: [
+        { name: "Git", icon: "📊" },
+        { name: "GitHub", icon: "🐙" },
+        { name: "Informatica PowerCenter", icon: "⚡" },
+        { name: "ETL", icon: "🔄" },
+        { name: "JSON Processing", icon: "📋" },
+      ],
     },
   ];
   
@@ -68,25 +103,29 @@ const SkillsSection: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
           {skillCategories.map((category, idx) => (
-            <Card key={idx} className="glass-card h-full appear-animate">
+            <Card key={idx} className="glass-card h-full appear-animate hover:shadow-xl transition-all duration-300">
               <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-4">{category.title}</h3>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-3xl">{category.emoji}</span>
+                  <h3 className="text-xl font-bold">{category.title}</h3>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {category.skills.map((skill, skillIdx) => (
                     <TooltipProvider key={skillIdx}>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div 
-                            className="skill-pill appear-animate" 
+                            className="skill-pill appear-animate transition-all duration-300 hover:scale-105" 
                             style={{ 
                               animationDelay: `${0.1 + getRandomDelay()}s` 
                             }}
                           >
-                            {skill}
+                            <span className="mr-2">{skill.icon}</span>
+                            {skill.name}
                           </div>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>{skill}</p>
+                          <p>{skill.name}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -95,39 +134,6 @@ const SkillsSection: React.FC = () => {
               </CardContent>
             </Card>
           ))}
-        </div>
-
-        {/* Skill Proficiency */}
-        <div className="mt-16 appear-animate">
-          <h3 className="text-2xl font-bold text-center mb-10">Technical Proficiency</h3>
-
-          {/* Skill Bars */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {[
-              { name: "Python", level: 90 },
-              { name: "Java", level: 85 },
-              { name: "React.js", level: 80 },
-              { name: "Node.js", level: 75 },
-              { name: "Database Management", level: 85 },
-              { name: "ETL Processes", level: 90 },
-            ].map((skill, index) => (
-              <div key={index} className="appear-animate" style={{ animationDelay: `${0.1 * index}s` }}>
-                <div className="flex justify-between mb-1">
-                  <span className="font-medium">{skill.name}</span>
-                  <span className="text-muted-foreground">{skill.level}%</span>
-                </div>
-                <div className="h-2 bg-secondary/70 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-primary rounded-full"
-                    style={{ 
-                      width: `${skill.level}%`,
-                      transition: "width 1s ease-out"
-                    }}
-                  ></div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
