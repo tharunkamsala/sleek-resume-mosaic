@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Github, ExternalLink } from "lucide-react";
+import { Github, ExternalLink, Code, FolderGit2, GitBranch } from "lucide-react";
 
 interface Project {
   title: string;
@@ -69,53 +69,66 @@ const ProjectsSection: React.FC = () => {
   ];
 
   return (
-    <section id="projects" ref={sectionRef} className="bg-card/30 py-20">
-      <div className="container-section">
-        <h2 className="section-heading appear-animate">Projects</h2>
-        <p className="section-subheading appear-animate">
-          Explore some of my recent work and technical projects.
+    <section id="projects" ref={sectionRef} className="bg-card/30 py-20 relative">
+      {/* Background code pattern */}
+      <div className="absolute inset-0 bg-code-texture opacity-30" />
+      
+      <div className="container-section relative z-10">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <FolderGit2 className="h-8 w-8 text-primary" />
+          <h2 className="section-heading appear-animate">Projects</h2>
+        </div>
+        <p className="section-subheading appear-animate font-mono">
+          <span className="text-primary">/</span> Some of my recent work and technical projects <span className="text-primary">/</span>
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
           {projects.map((project, index) => (
             <Card 
               key={index} 
-              className="glass-card overflow-hidden appear-animate"
+              className="glass-card overflow-hidden appear-animate relative border border-border/30 backdrop-blur-sm hover:border-primary/20 transition-all duration-300"
               style={{ animationDelay: `${0.1 * index}s` }}
             >
-              {/* Project Image */}
-              <div className="w-full aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                <div className="text-4xl font-bold text-primary/20">
-                  {project.title.split(" ").map(word => word[0]).join("")}
-                </div>
+              {/* Branch decoration */}
+              <div className="absolute top-4 right-4">
+                <GitBranch className="h-5 w-5 text-primary/30" />
+              </div>
+              
+              {/* Header with commit-like design */}
+              <div className="bg-secondary/10 p-3 border-b border-border/30 flex items-center">
+                <Code className="h-5 w-5 text-primary mr-2" />
+                <h3 className="text-xl font-mono font-bold">{project.title}</h3>
               </div>
               
               <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                <p className="text-muted-foreground mb-4">{project.description}</p>
+                <p className="text-muted-foreground mb-4 font-mono">
+                  <span className="text-primary">/**</span> {project.description} <span className="text-primary">*/</span>
+                </p>
                 
                 {/* Technologies */}
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 font-mono">
                   {project.technologies.map((tech, idx) => (
-                    <Badge key={idx} variant="secondary">{tech}</Badge>
+                    <Badge key={idx} variant="secondary" className="bg-secondary/30 hover:bg-primary/10 transition-colors text-foreground">
+                      {tech}
+                    </Badge>
                   ))}
                 </div>
               </CardContent>
               
-              <CardFooter className="p-6 pt-0 flex gap-3">
+              <CardFooter className="p-6 pt-0 flex gap-3 border-t border-border/10 mt-4">
                 {project.github && (
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" asChild className="font-mono">
                     <a href={project.github} target="_blank" rel="noopener noreferrer">
                       <Github className="mr-2 h-4 w-4" />
-                      GitHub
+                      git clone
                     </a>
                   </Button>
                 )}
                 {project.demo && (
-                  <Button variant="default" size="sm" asChild>
+                  <Button variant="default" size="sm" asChild className="font-mono">
                     <a href={project.demo} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="mr-2 h-4 w-4" />
-                      Live Demo
+                      npm start
                     </a>
                   </Button>
                 )}
