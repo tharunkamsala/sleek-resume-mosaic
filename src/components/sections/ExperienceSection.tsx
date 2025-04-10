@@ -92,7 +92,7 @@ const ExperienceSection: React.FC = () => {
 
   const companyLogos: Record<string, React.ReactNode> = {
     IBM: (
-      <div className="h-12 w-12 flex items-center justify-center bg-blue-600 text-white font-bold text-sm rounded-lg shadow-lg">
+      <div className="h-14 w-14 flex items-center justify-center bg-blue-600 text-white font-bold text-sm rounded-xl shadow-lg">
         IBM
       </div>
     )
@@ -104,15 +104,15 @@ const ExperienceSection: React.FC = () => {
       opacity: 1,
       y: 0,
       transition: {
-        delay: i * 0.1,
-        duration: 0.5,
-        ease: [0.43, 0.13, 0.23, 0.96]
+        delay: i * 0.15,
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1]
       }
     })
   };
 
   return (
-    <section id="experience" ref={sectionRef} className="bg-background py-20">
+    <section id="experience" ref={sectionRef} className="bg-background py-24">
       <div className="container-section">
         <h2 className="section-heading appear-animate">Work Experience</h2>
         <p className="section-subheading appear-animate">
@@ -120,7 +120,7 @@ const ExperienceSection: React.FC = () => {
         </p>
 
         <div className="mt-16 max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 gap-10">
+          <div className="grid grid-cols-1 gap-14">
             {experiences.map((exp, index) => (
               <motion.div
                 key={index}
@@ -132,42 +132,42 @@ const ExperienceSection: React.FC = () => {
                 variants={cardVariants}
               >
                 <Card 
-                  className="overflow-hidden glass-card border-2 hover:border-primary/30 group"
+                  className="overflow-hidden apple-card border-2 hover:border-primary/30 hover-lift group"
                   onClick={() => setActiveExperience(activeExperience === index ? null : index)}
                 >
                   <CardContent className="p-0">
-                    <div className="p-6 relative">
+                    <div className="p-7 relative">
                       {/* Top gradient decoration */}
-                      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/50 via-accent to-primary/20"></div>
+                      <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary/50 via-accent to-primary/20"></div>
                       
-                      <div className="flex flex-col md:flex-row md:items-center gap-4">
+                      <div className="flex flex-col md:flex-row md:items-center gap-5">
                         <motion.div 
-                          whileHover={{ rotate: [0, -5, 5, -5, 0], scale: 1.05 }}
-                          transition={{ duration: 0.5 }}
+                          whileHover={{ rotate: [0, -3, 3, -3, 0], scale: 1.05 }}
+                          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                           className="flex-shrink-0"
                         >
                           {companyLogos[exp.logo]}
                         </motion.div>
                         
                         <div className="flex-grow">
-                          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                             <div>
                               <h3 className="text-2xl font-bold text-foreground/90 group-hover:text-primary transition-colors">
                                 {exp.title}
                               </h3>
-                              <div className="flex items-center gap-1 text-lg text-primary/80 font-medium">
+                              <div className="flex items-center gap-1.5 text-lg text-primary/80 font-medium">
                                 <Briefcase className="h-4 w-4" />
                                 <span>{exp.company}</span>
                               </div>
                             </div>
                             
-                            <div className="flex items-center gap-1 text-sm text-muted-foreground bg-secondary/80 px-3 py-1.5 rounded-full shadow-sm">
-                              <Calendar className="h-3.5 w-3.5" />
+                            <div className="flex items-center gap-1.5 text-sm text-muted-foreground bg-secondary/80 px-4 py-1.5 rounded-full shadow-sm">
+                              <Calendar className="h-4 w-4" />
                               <span>{exp.period}</span>
                             </div>
                           </div>
                           
-                          <p className="text-muted-foreground mt-3">{exp.description}</p>
+                          <p className="text-muted-foreground mt-4 text-lg">{exp.description}</p>
                         </div>
                       </div>
                       
@@ -175,39 +175,39 @@ const ExperienceSection: React.FC = () => {
                         type="single" 
                         collapsible
                         value={activeExperience === index ? "projects" : ""}
-                        className="mt-4"
+                        className="mt-5"
                       >
                         <AccordionItem value="projects" className="border-none">
-                          <AccordionTrigger className="py-2 px-4 bg-secondary/50 rounded-lg hover:bg-secondary/80 transition-all">
-                            <span className="text-sm font-medium">Key Projects</span>
+                          <AccordionTrigger className="py-2.5 px-5 bg-secondary/50 rounded-xl hover:bg-secondary/80 transition-all text-base">
+                            <span className="font-medium">Key Projects</span>
                           </AccordionTrigger>
                           
-                          <AccordionContent className="pt-6">
-                            <div className="space-y-8">
+                          <AccordionContent className="pt-7">
+                            <div className="space-y-10">
                               {exp.projects.map((project, pIdx) => (
                                 <motion.div 
                                   key={pIdx} 
-                                  className="relative pl-6 border-l-2 border-primary/30"
+                                  className="relative pl-7 border-l-2 border-primary/30"
                                   initial={{ opacity: 0, x: -10 }}
                                   animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: pIdx * 0.2 }}
+                                  transition={{ delay: pIdx * 0.2, ease: [0.22, 1, 0.36, 1] }}
                                 >
                                   {/* Project dot */}
-                                  <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-primary/20 border-2 border-primary/50"></div>
+                                  <div className="absolute left-[-10px] top-0 w-5 h-5 rounded-full bg-primary/20 border-2 border-primary/50 shadow-sm"></div>
                                   
-                                  <h4 className="font-semibold text-lg mb-2 flex items-center gap-2">
-                                    <ChevronRight className="h-4 w-4 text-primary" />
+                                  <h4 className="font-semibold text-xl mb-3 flex items-center gap-2">
+                                    <ChevronRight className="h-5 w-5 text-primary" />
                                     {project.title}
                                   </h4>
-                                  <p className="text-muted-foreground mb-3">{project.description}</p>
+                                  <p className="text-muted-foreground mb-4 text-base">{project.description}</p>
                                   
                                   {/* Technologies */}
-                                  <div className="flex flex-wrap gap-2 mb-3">
+                                  <div className="flex flex-wrap gap-2.5 mb-4">
                                     {project.technologies.map((tech, tIdx) => (
                                       <Badge 
                                         key={tIdx} 
                                         variant="secondary"
-                                        className="bg-secondary/70 hover:bg-primary/10 hover:text-primary transition-colors"
+                                        className="bg-secondary/70 hover:bg-primary/10 hover:text-primary transition-colors text-sm px-3 py-1"
                                       >
                                         {tech}
                                       </Badge>
@@ -216,18 +216,18 @@ const ExperienceSection: React.FC = () => {
                                   
                                   {/* Achievements */}
                                   {project.achievements && project.achievements.length > 0 && (
-                                    <div className="mt-3">
-                                      <h5 className="text-sm font-medium flex items-center gap-1 mb-2">
-                                        <Award className="h-3.5 w-3.5 text-primary" />
+                                    <div className="mt-4 bg-secondary/30 p-4 rounded-xl">
+                                      <h5 className="text-base font-medium flex items-center gap-1.5 mb-3">
+                                        <Award className="h-4 w-4 text-primary" />
                                         Key Achievements:
                                       </h5>
-                                      <ul className="space-y-1">
+                                      <ul className="space-y-2">
                                         {project.achievements.map((achievement, aIdx) => (
                                           <li 
                                             key={aIdx} 
-                                            className="text-sm text-muted-foreground pl-4 relative"
+                                            className="text-base text-muted-foreground pl-5 relative"
                                           >
-                                            <span className="absolute left-0 top-2 w-2 h-2 rounded-full bg-primary/40"></span>
+                                            <span className="absolute left-0 top-2.5 w-2 h-2 rounded-full bg-primary/40"></span>
                                             {achievement}
                                           </li>
                                         ))}

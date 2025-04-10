@@ -35,6 +35,7 @@ const AwardsSection: React.FC = () => {
     };
   }, []);
 
+  // Premium Apple-style subtle 3D effect
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
     if (hoveredAward !== index) return;
     
@@ -46,14 +47,17 @@ const AwardsSection: React.FC = () => {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     
-    const rotateX = (y - centerY) / 15;
-    const rotateY = (centerX - x) / 15;
+    // Very subtle rotation - Apple style
+    const rotateX = (y - centerY) / 30;
+    const rotateY = (centerX - x) / 30;
     
     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    card.style.transition = "transform 0.2s cubic-bezier(0.22, 1, 0.36, 1)";
   };
   
   const resetCardTransform = (card: HTMLDivElement) => {
     card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+    card.style.transition = "transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)";
   };
 
   const awards: AwardItem[] = [
@@ -81,20 +85,26 @@ const AwardsSection: React.FC = () => {
   ];
 
   return (
-    <section id="awards" ref={sectionRef} className="bg-card/30 py-20">
+    <section id="awards" ref={sectionRef} className="bg-card/30 py-24">
+      {/* Premium background decorative elements */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-1/4 right-1/3 w-[30vw] h-[30vw] gradient-orb opacity-20"></div>
+        <div className="absolute bottom-1/3 left-1/4 w-[25vw] h-[25vw] gradient-orb opacity-15"></div>
+      </div>
+      
       <div className="container-section">
         <h2 className="section-heading appear-animate">Leadership & Awards</h2>
         <p className="section-subheading appear-animate">
           Recognition of my achievements and leadership roles.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-14">
           {awards.map((award, index) => (
             <div key={index} className="perspective-1000">
               <Card 
-                className="glass-card h-full appear-animate preserve-3d transition-all duration-300"
+                className="apple-card h-full appear-animate preserve-3d transition-all duration-300 hover-lift"
                 style={{ 
-                  animationDelay: `${0.1 * index}s`,
+                  animationDelay: `${0.15 * index}s`,
                   transformStyle: 'preserve-3d'
                 }}
                 onMouseEnter={() => setHoveredAward(index)}
@@ -104,37 +114,37 @@ const AwardsSection: React.FC = () => {
                 }}
                 onMouseMove={(e) => handleMouseMove(e, index)}
               >
-                <CardContent className="p-6 flex flex-col items-center text-center">
+                <CardContent className="p-8 flex flex-col items-center text-center">
                   <div 
-                    className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 transition-all duration-500 transform-gpu"
+                    className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 transition-all duration-500 transform-gpu shadow-lg"
                     style={{ 
-                      transform: hoveredAward === index ? 'translateZ(30px) scale(1.1)' : 'translateZ(20px)',
-                      boxShadow: hoveredAward === index ? '0 10px 25px rgba(59, 130, 246, 0.3)' : 'none'
+                      transform: hoveredAward === index ? 'translateZ(40px) scale(1.1)' : 'translateZ(20px)',
+                      boxShadow: hoveredAward === index ? '0 15px 30px rgba(59, 130, 246, 0.2)' : 'none'
                     }}
                   >
-                    <div className="text-primary">{award.icon}</div>
+                    <div className="text-primary text-2xl">{award.icon}</div>
                   </div>
                   
                   <h3 
-                    className="text-xl font-bold mb-2"
+                    className="text-2xl font-bold mb-3"
                     style={{ transform: 'translateZ(15px)' }}
                   >
                     {award.title}
                   </h3>
                   <div 
-                    className="text-primary font-medium mb-1"
+                    className="text-primary font-medium mb-2 text-lg"
                     style={{ transform: 'translateZ(10px)' }}
                   >
                     {award.organization}
                   </div>
                   <div 
-                    className="text-sm text-muted-foreground mb-3"
+                    className="text-base text-muted-foreground mb-4 bg-secondary/30 px-3 py-1 rounded-full inline-block"
                     style={{ transform: 'translateZ(5px)' }}
                   >
                     {award.year}
                   </div>
                   <p 
-                    className="text-muted-foreground"
+                    className="text-muted-foreground text-base"
                     style={{ transform: 'translateZ(0px)' }}
                   >
                     {award.description}

@@ -19,6 +19,7 @@ interface Project {
 const ProjectsSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -39,6 +40,17 @@ const ProjectsSection: React.FC = () => {
       elements.forEach((el) => observer.unobserve(el));
     };
   }, []);
+
+  // Apple-style subtle mouse tracking for premium look
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const { currentTarget, clientX, clientY } = e;
+    const { left, top, width, height } = currentTarget.getBoundingClientRect();
+    
+    const x = (clientX - left) / width;
+    const y = (clientY - top) / height;
+    
+    setMousePosition({ x, y });
+  };
 
   const projects: Project[] = [
     {
@@ -87,47 +99,61 @@ const ProjectsSection: React.FC = () => {
     }
   };
 
-  // Animation variants for framer-motion
+  // Premium animation variants for framer-motion
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.15,
+        delayChildren: 0.1,
+        ease: [0.22, 1, 0.36, 1]
       }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         type: "spring",
-        stiffness: 100,
-        damping: 12
+        stiffness: 80,
+        damping: 15
       }
     }
   };
 
   return (
-    <section id="projects" ref={sectionRef} className="py-24 relative overflow-hidden">
-      {/* Background decorative elements */}
+    <section 
+      id="projects" 
+      ref={sectionRef} 
+      className="py-24 relative overflow-hidden"
+      onMouseMove={handleMouseMove}
+    >
+      {/* Premium background decorative elements */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-1/4 right-1/3 w-96 h-96 bg-primary/5 rounded-full filter blur-3xl"></div>
-        <div className="absolute bottom-1/3 left-1/4 w-72 h-72 bg-accent/5 rounded-full filter blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-secondary/10 rounded-full filter blur-3xl"></div>
+        <div className="absolute top-1/4 right-1/3 w-96 h-96 bg-primary/3 filter blur-3xl opacity-50 gradient-orb"></div>
+        <div className="absolute bottom-1/3 left-1/4 w-72 h-72 bg-accent/3 filter blur-3xl opacity-40 gradient-orb"></div>
+        <div 
+          className="absolute w-[40vw] h-[40vw] rounded-full bg-primary/3 filter blur-[100px] opacity-30"
+          style={{
+            top: `calc(50% - 20vw)`,
+            left: `calc(${mousePosition.x * 100}% - 20vw)`,
+            transition: "left 3s cubic-bezier(0.22, 1, 0.36, 1), top 3s cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+        ></div>
       </div>
       
       <div className="container-section">
         <h2 className="section-heading appear-animate">Projects</h2>
-        <p className="section-subheading appear-animate mb-12">
+        <p className="section-subheading appear-animate mb-14">
           Explore some of my recent work and technical projects that showcase my skills and expertise.
         </p>
 
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-10"
+          className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-10"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -138,39 +164,38 @@ const ProjectsSection: React.FC = () => {
               key={index} 
               className="perspective-1000"
               variants={itemVariants}
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              whileHover={{ scale: 1.02, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }}
             >
               <Card 
-                className={`overflow-hidden rounded-xl preserve-3d transition-all duration-500 transform-gpu ${
+                className={`overflow-hidden rounded-2xl preserve-3d transition-all duration-500 transform-gpu apple-card hover-lift ${
                   selectedProject === index ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""
                 }`}
                 onClick={() => setSelectedProject(index === selectedProject ? null : index)}
               >
                 {/* Project Header Section */}
-                <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-6 relative overflow-hidden">
+                <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-7 relative overflow-hidden backdrop-blur-sm">
                   <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-xl bg-card flex items-center justify-center shadow-lg preserve-3d" style={{ transform: 'translateZ(20px)' }}>
+                    <div className="flex items-center gap-5">
+                      <div className="w-16 h-16 rounded-xl bg-card flex items-center justify-center shadow-lg preserve-3d apple-card" style={{ transform: 'translateZ(20px)' }}>
                         {getProjectIcon(project.technologies)}
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold">{project.title}</h3>
-                        <div className="flex flex-wrap gap-1.5 mt-2">
+                        <h3 className="text-2xl font-bold">{project.title}</h3>
+                        <div className="flex flex-wrap gap-2 mt-3">
                           {project.technologies.slice(0, 3).map((tech, idx) => (
-                            <Badge key={idx} variant="outline" className="bg-background/50 backdrop-blur-sm">
+                            <Badge key={idx} variant="outline" className="bg-background/50 backdrop-blur-sm px-3 py-1">
                               {tech}
                             </Badge>
                           ))}
                           {project.technologies.length > 3 && (
                             <HoverCard>
                               <HoverCardTrigger asChild>
-                                <Badge variant="outline" className="bg-background/50 backdrop-blur-sm cursor-pointer">
+                                <Badge variant="outline" className="bg-background/50 backdrop-blur-sm cursor-pointer px-3 py-1">
                                   +{project.technologies.length - 3}
                                 </Badge>
                               </HoverCardTrigger>
                               <HoverCardContent className="w-auto">
-                                <div className="flex flex-wrap gap-1">
+                                <div className="flex flex-wrap gap-1.5">
                                   {project.technologies.slice(3).map((tech, idx) => (
                                     <Badge key={idx} variant="secondary">{tech}</Badge>
                                   ))}
@@ -183,33 +208,33 @@ const ProjectsSection: React.FC = () => {
                     </div>
                     
                     {/* Decorative elements */}
-                    <div className="absolute right-4 top-4 text-primary/20 text-xs flex items-center gap-1">
+                    <div className="absolute right-5 top-5 text-primary/20 text-xs flex items-center gap-1">
                       <code>&lt;/&gt;</code>
                     </div>
                   </div>
                   
                   {/* Animated line */}
-                  <div className="h-0.5 bg-gradient-to-r from-transparent via-primary/20 to-transparent mt-6"></div>
+                  <div className="h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent mt-7"></div>
                 </div>
                 
-                <CardContent className="p-6 relative preserve-3d" style={{ transform: 'translateZ(30px)' }}>
-                  <p className="text-muted-foreground">{project.description}</p>
+                <CardContent className="p-7 relative preserve-3d" style={{ transform: 'translateZ(30px)' }}>
+                  <p className="text-muted-foreground text-lg">{project.description}</p>
                 </CardContent>
                 
-                <CardFooter className="p-6 pt-0 flex gap-3 justify-between items-center preserve-3d" style={{ transform: 'translateZ(40px)' }}>
-                  <div className="flex gap-2">
+                <CardFooter className="p-7 pt-0 flex gap-4 justify-between items-center preserve-3d" style={{ transform: 'translateZ(40px)' }}>
+                  <div className="flex gap-3">
                     {project.github && (
-                      <Button variant="outline" size="sm" className="rounded-full transition-all duration-300 hover:shadow-lg" asChild>
+                      <Button variant="outline" size="lg" className="rounded-full transition-all duration-300 hover:shadow-lg" asChild>
                         <a href={project.github} target="_blank" rel="noopener noreferrer">
-                          <Github className="w-4 h-4 mr-1" />
+                          <Github className="w-4 h-4 mr-2" />
                           Code
                         </a>
                       </Button>
                     )}
                     {project.demo && (
-                      <Button variant="default" size="sm" className="rounded-full transition-all duration-300 hover:shadow-lg" asChild>
+                      <Button variant="default" size="lg" className="rounded-full transition-all duration-300 hover:shadow-lg" asChild>
                         <a href={project.demo} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="w-4 h-4 mr-1" />
+                          <ExternalLink className="w-4 h-4 mr-2" />
                           Demo
                         </a>
                       </Button>
@@ -217,8 +242,8 @@ const ProjectsSection: React.FC = () => {
                   </div>
                   
                   {/* Decorative code tag */}
-                  <div className="text-xs text-muted-foreground font-mono opacity-70">
-                    <Server className="w-3 h-3 inline-block mr-1" />
+                  <div className="text-sm text-muted-foreground font-mono opacity-80 bg-secondary/30 px-3 py-1 rounded-full">
+                    <Server className="w-3 h-3 inline-block mr-1.5" />
                     {project.technologies[0]}
                   </div>
                 </CardFooter>
