@@ -122,6 +122,14 @@ export default {
 				'pulse-slow': {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.5' }
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
+				},
+				'glow': {
+					'0%, 100%': { boxShadow: '0 0 5px rgba(59, 130, 246, 0.5)' },
+					'50%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.8)' }
 				}
 			},
 			animation: {
@@ -136,7 +144,9 @@ export default {
 				'scale-in': 'scale-in 0.5s ease-out forwards',
 				'typewriter': 'typewriter 2.5s steps(40, end) forwards',
 				'blink': 'blink 0.7s step-end infinite',
-				'pulse-slow': 'pulse-slow 3s infinite'
+				'pulse-slow': 'pulse-slow 3s infinite',
+				'float': 'float 3s ease-in-out infinite',
+				'glow': 'glow 2s ease-in-out infinite'
 			},
 			transitionTimingFunction: {
 				'in-expo': 'cubic-bezier(0.95, 0.05, 0.795, 0.035)',
@@ -144,8 +154,73 @@ export default {
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+			},
+			// 3D transform utilities
+			perspective: {
+				'none': 'none',
+				'500': '500px',
+				'1000': '1000px',
+				'2000': '2000px',
+			},
+			transformStyle: {
+				'flat': 'flat',
+				'3d': 'preserve-3d',
+			},
+			backfaceVisibility: {
+				'visible': 'visible',
+				'hidden': 'hidden',
+			},
+			rotate: {
+				'y-3': 'rotateY(3deg)',
+				'x-minus-3': 'rotateX(-3deg)',
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+		require("tailwindcss-animate"),
+		function({ addUtilities }) {
+			const newUtilities = {
+				'.perspective-500': {
+					perspective: '500px',
+				},
+				'.perspective-1000': {
+					perspective: '1000px',
+				},
+				'.perspective-2000': {
+					perspective: '2000px',
+				},
+				'.transform-style-flat': {
+					transformStyle: 'flat',
+				},
+				'.transform-style-3d': {
+					transformStyle: 'preserve-3d',
+				},
+				'.backface-visible': {
+					backfaceVisibility: 'visible',
+				},
+				'.backface-hidden': {
+					backfaceVisibility: 'hidden',
+				},
+				'.preserve-3d': {
+					transformStyle: 'preserve-3d',
+				},
+				'.rotate-y-3': {
+					transform: 'rotateY(3deg)',
+				},
+				'.rotate-x-minus-3': {
+					transform: 'rotateX(-3deg)',
+				},
+				'.transform-gpu': {
+					transform: 'translateZ(0)',
+				},
+				'.animate-float': {
+					animation: 'float 3s ease-in-out infinite',
+				},
+				'.animate-glow': {
+					animation: 'glow 2s ease-in-out infinite',
+				},
+			};
+			addUtilities(newUtilities);
+		},
+	],
 } satisfies Config;
