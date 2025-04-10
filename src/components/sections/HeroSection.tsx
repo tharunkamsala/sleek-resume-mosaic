@@ -7,29 +7,39 @@ import TypewriterComponent from "typewriter-effect";
 const HeroSection: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
+    setIsInView(true);
+    
     const handleMouseMove = (e: MouseEvent) => {
       if (!heroRef.current) return;
       
-      // Parallax effect for the background
+      // Smoother, more subtle parallax effect for the background
       const mouseX = e.clientX / window.innerWidth;
       const mouseY = e.clientY / window.innerHeight;
       
       setMousePosition({ x: mouseX, y: mouseY });
       
-      const moveX = (mouseX - 0.5) * 30;
-      const moveY = (mouseY - 0.5) * 30;
+      // More subtle movement
+      const moveX = (mouseX - 0.5) * 15; // Reduced from 30
+      const moveY = (mouseY - 0.5) * 15; // Reduced from 30
       
+      // Apply with smoother transition
       heroRef.current.style.backgroundPosition = `calc(50% + ${moveX}px) calc(50% + ${moveY}px)`;
       
-      // Move floating elements with mouse
+      // Move floating elements with mouse - with smoother, more subtle effect
       const floatingElements = document.querySelectorAll('.floating-3d');
       floatingElements.forEach((el: any) => {
-        const speed = el.dataset.speed || 1;
-        const x = (mouseX - 0.5) * 40 * speed;
-        const y = (mouseY - 0.5) * 40 * speed;
-        el.style.transform = `translate3d(${x}px, ${y}px, 0) rotateX(${-y * 0.5}deg) rotateY(${x * 0.5}deg)`;
+        const speed = parseFloat(el.dataset.speed) || 1;
+        const depth = parseFloat(el.dataset.depth) || 20;
+        
+        // More precise calculation with damping
+        const x = (mouseX - 0.5) * depth * speed;
+        const y = (mouseY - 0.5) * depth * speed;
+        
+        // Apply smooth transform with transition
+        el.style.transform = `translate3d(${x}px, ${y}px, 0) rotateX(${-y * 0.2}deg) rotateY(${x * 0.2}deg)`;
       });
     };
     
@@ -41,16 +51,30 @@ const HeroSection: React.FC = () => {
     <section 
       id="home" 
       ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary/50 overflow-hidden perspective-1000"
+      className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-secondary/30 overflow-hidden perspective-1000"
+      style={{transition: "background-position 0.2s ease-out"}} // Smoother transition
     >
+      {/* Subtle gradient orbs in background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 right-1/3 w-[40vw] h-[40vw] rounded-full bg-primary/3 filter blur-[80px] opacity-70"></div>
+        <div className="absolute bottom-1/3 left-1/4 w-[30vw] h-[30vw] rounded-full bg-primary/3 filter blur-[60px] opacity-60"></div>
+      </div>
+
       {/* 3D Floating Code Blocks */}
       <div className="absolute w-full h-full">
         <div 
-          className="absolute top-[15%] left-[10%] w-32 h-32 rounded-xl bg-primary/5 border border-primary/20 floating-3d perspective-1000"
-          data-speed="2" 
-          style={{ zIndex: 1 }}
+          className="absolute top-[15%] left-[10%] w-32 h-32 rounded-xl bg-primary/5 border border-primary/20 floating-3d"
+          data-speed="1.2" 
+          data-depth="20"
+          style={{ 
+            zIndex: 1, 
+            transition: "transform 0.3s cubic-bezier(0.19, 1, 0.22, 1)",
+            opacity: isInView ? 1 : 0,
+            transform: `translateY(${isInView ? '0' : '20px'}) translateZ(0)`,
+            transitionDelay: "0.1s"
+          }}
         >
-          <div className="p-3 text-xs font-mono text-primary/70 overflow-hidden">
+          <div className="p-3 text-xs font-mono text-primary/70 overflow-hidden backdrop-blur-sm">
             <span className="text-primary">const</span> developer = {"{"}
             <br />  <span className="text-green-500">name</span>: <span className="text-amber-500">'Tharun'</span>,
             <br />  <span className="text-green-500">skills</span>: [...]
@@ -59,11 +83,18 @@ const HeroSection: React.FC = () => {
         </div>
         
         <div 
-          className="absolute bottom-[25%] right-[15%] w-48 h-32 rounded-xl bg-primary/5 border border-primary/20 floating-3d perspective-1000"
-          data-speed="1.5" 
-          style={{ zIndex: 1 }}
+          className="absolute bottom-[25%] right-[15%] w-48 h-32 rounded-xl bg-primary/5 border border-primary/20 floating-3d"
+          data-speed="0.8" 
+          data-depth="30"
+          style={{ 
+            zIndex: 1, 
+            transition: "transform 0.3s cubic-bezier(0.19, 1, 0.22, 1)",
+            opacity: isInView ? 1 : 0,
+            transform: `translateY(${isInView ? '0' : '20px'}) translateZ(0)`,
+            transitionDelay: "0.2s"
+          }}
         >
-          <div className="p-3 text-xs font-mono text-primary/70 overflow-hidden">
+          <div className="p-3 text-xs font-mono text-primary/70 overflow-hidden backdrop-blur-sm">
             <span className="text-purple-500">function</span> <span className="text-blue-400">createSolution</span>() {"{"}
             <br />  <span className="text-purple-500">return</span> <span className="text-amber-500">'Innovative code'</span>;
             <br />{"}"}
@@ -71,43 +102,81 @@ const HeroSection: React.FC = () => {
         </div>
         
         <div 
-          className="absolute top-[60%] left-[20%] w-40 h-28 rounded-xl bg-primary/5 border border-primary/20 floating-3d perspective-1000"
-          data-speed="1.8" 
-          style={{ zIndex: 1 }}
+          className="absolute top-[60%] left-[20%] w-40 h-28 rounded-xl bg-primary/5 border border-primary/20 floating-3d shadow-lg"
+          data-speed="1.5" 
+          data-depth="25"
+          style={{ 
+            zIndex: 1, 
+            transition: "transform 0.3s cubic-bezier(0.19, 1, 0.22, 1)",
+            opacity: isInView ? 1 : 0,
+            transform: `translateY(${isInView ? '0' : '20px'}) translateZ(0)`,
+            transitionDelay: "0.3s"
+          }}
         >
-          <div className="p-3 text-xs font-mono text-primary/70">
+          <div className="p-3 text-xs font-mono text-primary/70 backdrop-blur-sm">
             <span className="text-blue-400">import</span> {"{"} Success {"}"} <span className="text-blue-400">from</span> <span className="text-amber-500">'./passion'</span>;
           </div>
         </div>
       </div>
       
-      {/* Background gradient circles for visual interest */}
-      <div className="absolute -top-10 -right-10 w-64 h-64 rounded-full bg-primary/5 blur-3xl animate-pulse-slow"></div>
-      <div className="absolute bottom-20 -left-20 w-80 h-80 rounded-full bg-primary/5 blur-3xl animate-pulse-slow"></div>
+      {/* Background gradient overlay */}
+      <div 
+        className="absolute inset-0 bg-gradient-radial from-transparent to-background/80 opacity-70"
+        style={{ 
+          backgroundSize: "150% 150%", 
+          backgroundPosition: `${50 + (mousePosition.x - 0.5) * 10}% ${50 + (mousePosition.y - 0.5) * 10}%`,
+          transition: "background-position 0.3s ease-out"
+        }}
+      ></div>
       
       {/* Hero content */}
-      <div className="container relative z-10 pt-20">
+      <div className="container relative z-10 pt-8 md:pt-12">
         <div className="max-w-3xl mx-auto text-center">
           <div className="flex flex-col items-center space-y-6 perspective-1000">
             {/* Greeting tag with 3D hover effect */}
-            <div className="card-3d">
-              <div className="card-3d-content">
-                <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-sm font-medium mb-2 animate-fade-in">
-                  <Code className="inline-block mr-1 h-4 w-4" />
-                  Software Development Engineer
-                </span>
+            <div 
+              className="transition-all duration-700 transform"
+              style={{
+                opacity: isInView ? 1 : 0,
+                transform: `translateY(${isInView ? '0' : '20px'})`,
+                transitionDelay: "0.1s"
+              }}
+            >
+              <div className="card-3d">
+                <div className="card-3d-content">
+                  <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-sm font-medium backdrop-blur-sm border border-primary/10">
+                    <Code className="inline-block mr-1 h-4 w-4" />
+                    Software Development Engineer
+                  </span>
+                </div>
               </div>
             </div>
             
             {/* Main heading with animation */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tighter">
-              <span className="block animate-slide-up" style={{ animationDelay: "0.1s" }}>
+            <h1 
+              className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tighter"
+              style={{
+                opacity: isInView ? 1 : 0,
+                transform: `translateY(${isInView ? '0' : '20px'})`,
+                transition: "opacity 0.7s ease-out, transform 0.7s ease-out",
+                transitionDelay: "0.2s"
+              }}
+            >
+              <span className="block bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
                 Hi, I'm Kamsala Tharun
               </span>
             </h1>
             
             {/* Typewriter effect */}
-            <div className="text-xl md:text-2xl text-muted-foreground animate-fade-in" style={{ animationDelay: "0.4s" }}>
+            <div 
+              className="text-xl md:text-2xl text-muted-foreground"
+              style={{
+                opacity: isInView ? 1 : 0,
+                transform: `translateY(${isInView ? '0' : '20px'})`,
+                transition: "opacity 0.7s ease-out, transform 0.7s ease-out",
+                transitionDelay: "0.3s"
+              }}
+            >
               <TypewriterComponent
                 options={{
                   strings: [
@@ -118,18 +187,36 @@ const HeroSection: React.FC = () => {
                   ],
                   autoStart: true,
                   loop: true,
+                  delay: 50,
+                  deleteSpeed: 30
                 }}
               />
             </div>
             
             {/* Description */}
-            <p className="text-muted-foreground max-w-2xl animate-fade-in" style={{ animationDelay: "0.6s" }}>
+            <p 
+              className="text-muted-foreground max-w-2xl"
+              style={{
+                opacity: isInView ? 1 : 0,
+                transform: `translateY(${isInView ? '0' : '20px'})`,
+                transition: "opacity 0.7s ease-out, transform 0.7s ease-out",
+                transitionDelay: "0.4s"
+              }}
+            >
               Passionate about creating efficient and intuitive software solutions. Specialized in full-stack development, 
               data processing automation, and ETL migration tools.
             </p>
             
             {/* CTA Buttons with 3D effect */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-fade-in" style={{ animationDelay: "0.8s" }}>
+            <div 
+              className="flex flex-col sm:flex-row gap-4 pt-4"
+              style={{
+                opacity: isInView ? 1 : 0,
+                transform: `translateY(${isInView ? '0' : '20px'})`,
+                transition: "opacity 0.7s ease-out, transform 0.7s ease-out",
+                transitionDelay: "0.5s"
+              }}
+            >
               <div className="card-3d">
                 <div className="card-3d-content">
                   <Button className="button-primary" size="lg">
@@ -155,10 +242,19 @@ const HeroSection: React.FC = () => {
       </div>
       
       {/* Scroll indicator */}
-      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce">
+      <div 
+        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center"
+        style={{
+          opacity: isInView ? 1 : 0,
+          transform: `translateX(-50%) translateY(${isInView ? '0' : '20px'})`,
+          transition: "opacity 1s ease-out, transform 1s ease-out",
+          transitionDelay: "0.7s",
+          animation: "bounce 2s infinite"
+        }}
+      >
         <span className="text-sm text-muted-foreground mb-2">Scroll Down</span>
         <div className="w-5 h-9 rounded-full border-2 border-muted-foreground flex justify-center">
-          <div className="w-1 h-2 bg-muted-foreground rounded-full mt-1"></div>
+          <div className="w-1 h-2 bg-muted-foreground rounded-full mt-1 animate-pulse"></div>
         </div>
       </div>
     </section>
