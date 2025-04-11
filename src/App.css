@@ -1,4 +1,5 @@
 
+
 @keyframes bounce {
   0%, 100% {
     transform: translateY(0) translateX(-50%);
@@ -38,6 +39,172 @@
 @keyframes dash {
   to {
     stroke-dashoffset: 0;
+  }
+}
+
+/* Growth Path Vertical Line Animation */
+.growth-line-vertical {
+  background: linear-gradient(to bottom, 
+    rgba(59, 130, 246, 0) 0%, 
+    rgba(59, 130, 246, 0.7) 15%,
+    rgba(59, 130, 246, 0.7) 85%, 
+    rgba(59, 130, 246, 0) 100%);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+  width: 3px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* Timeline Node */
+.timeline-node-container {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.timeline-node-outer {
+  width: 32px;
+  height: 32px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(59, 130, 246, 0.7);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+.timeline-node-inner {
+  width: 16px;
+  height: 16px;
+  background-color: rgba(59, 130, 246, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+}
+
+/* Timeline card styles */
+.timeline-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    0 1px 1px rgba(255, 255, 255, 0.1) inset;
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  width: calc(50% - 50px);
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.timeline-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 15px 30px rgba(0, 0, 0, 0.15),
+    0 1px 1px rgba(255, 255, 255, 0.2) inset;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.timeline-card.left {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+.timeline-card.right {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.timeline-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 25px;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    rgba(59, 130, 246, 0.7) 0%,
+    rgba(59, 130, 246, 0) 100%
+  );
+}
+
+.timeline-card.left::after {
+  right: -25px;
+}
+
+.timeline-card.right::after {
+  left: -25px;
+  background: linear-gradient(
+    to left,
+    rgba(59, 130, 246, 0.7) 0%,
+    rgba(59, 130, 246, 0) 100%
+  );
+}
+
+.timeline-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: hsl(var(--foreground));
+}
+
+.timeline-card-company {
+  font-size: 1rem;
+  font-weight: 500;
+  color: hsl(var(--primary));
+  margin-bottom: 8px;
+}
+
+.timeline-card-duration {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.timeline-card-description {
+  font-size: 0.95rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .timeline-card {
+    width: calc(100% - 60px);
+    margin-left: 60px;
+  }
+  
+  .timeline-card.left, .timeline-card.right {
+    margin-left: 60px;
+    margin-right: 0;
+  }
+  
+  .growth-line-vertical {
+    left: 30px;
+  }
+  
+  .timeline-node-container {
+    left: 30px;
+  }
+  
+  .timeline-card::after {
+    width: 25px;
+  }
+  
+  .timeline-card.left::after, .timeline-card.right::after {
+    left: -25px;
+    background: linear-gradient(
+      to left,
+      rgba(59, 130, 246, 0.7) 0%,
+      rgba(59, 130, 246, 0) 100%
+    );
   }
 }
 
@@ -88,11 +255,3 @@
   box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
 }
 
-/* Growth Path Vertical Line Animation */
-.growth-line-vertical {
-  background: linear-gradient(to bottom, 
-    rgba(59, 130, 246, 0) 0%, 
-    rgba(59, 130, 246, 0.5) 30%,
-    rgba(59, 130, 246, 0.5) 70%, 
-    rgba(59, 130, 246, 0) 100%);
-}
