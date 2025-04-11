@@ -2,9 +2,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Briefcase, Calendar, ChevronRight, Award, Map, MapPin, Route, ArrowUpRight } from "lucide-react";
+import { Briefcase, Calendar, ChevronRight, Award, MapPin, Route, ArrowUpRight, ArrowUp } from "lucide-react";
 import { motion } from "framer-motion";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface Experience {
@@ -25,14 +24,12 @@ const ExperienceSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const [activeExperience, setActiveExperience] = useState<number | null>(0);
   const [hoveredNode, setHoveredNode] = useState<number | null>(null);
-
-  // Map path curve animation controls
-  const curveRef = useRef<SVGPathElement>(null);
+  const pathRef = useRef<SVGPathElement>(null);
   const [pathLength, setPathLength] = useState(0);
 
   useEffect(() => {
-    if (curveRef.current) {
-      setPathLength(curveRef.current.getTotalLength());
+    if (pathRef.current) {
+      setPathLength(pathRef.current.getTotalLength());
     }
     
     const observer = new IntersectionObserver(
@@ -56,11 +53,29 @@ const ExperienceSection: React.FC = () => {
 
   const experiences: Experience[] = [
     {
+      title: "Software Development Engineer Intern",
+      company: "IBM Expert Labs",
+      logo: "IBM",
+      period: "February 2024 – August 2024",
+      description: "Started my journey focused on ETL migration and data transformation solutions.",
+      projects: [
+        {
+          title: "ETL Migration Tool",
+          description: "Developed an ETL migration tool using Python & Informatica PowerCenter.",
+          technologies: ["Python", "Informatica PowerCenter", "ETL"],
+          achievements: [
+            "Increased migration speed by 90%",
+            "Enhanced data transformation accuracy to 95%"
+          ],
+        },
+      ],
+    },
+    {
       title: "Software Development Engineer",
       company: "IBM Expert Labs",
       logo: "IBM",
       period: "August 2024 – Present",
-      description: "Working on ETL migration tools and data processing automation systems.",
+      description: "Promoted to full-time role working on ETL migration tools and data processing automation systems.",
       projects: [
         {
           title: "Automated ETL Migration Tool",
@@ -76,24 +91,6 @@ const ExperienceSection: React.FC = () => {
             "Developed a Node.js & Express backend with file upload capabilities",
             "Automated data transformation using Python scripts",
             "Built a React.js UI for intuitive file uploads & JSON processing"
-          ],
-        },
-      ],
-    },
-    {
-      title: "Software Development Engineer Intern",
-      company: "IBM Expert Labs",
-      logo: "IBM",
-      period: "February 2024 – August 2024",
-      description: "Focused on ETL migration and data transformation solutions.",
-      projects: [
-        {
-          title: "ETL Migration Tool",
-          description: "Developed an ETL migration tool using Python & Informatica PowerCenter.",
-          technologies: ["Python", "Informatica PowerCenter", "ETL"],
-          achievements: [
-            "Increased migration speed by 90%",
-            "Enhanced data transformation accuracy to 95%"
           ],
         },
       ],
@@ -127,7 +124,7 @@ const ExperienceSection: React.FC = () => {
       scale: 1,
       opacity: 1,
       transition: {
-        delay: i * 0.2 + 0.3,
+        delay: i * 0.3,
         duration: 0.5,
         ease: [0.22, 1, 0.36, 1]
       }
@@ -173,224 +170,208 @@ const ExperienceSection: React.FC = () => {
           Follow my professional journey and growth as a software engineer
         </p>
 
-        <div className="mt-20 max-w-5xl mx-auto">
-          {/* Growth map visualization */}
-          <div className="hidden md:block h-24 relative mb-10">
-            <svg className="w-full h-full" viewBox="0 0 1000 100" preserveAspectRatio="none">
-              <motion.path
-                ref={curveRef}
-                d="M0,50 C250,20 350,80 500,50 C650,20 750,80 1000,50"
-                fill="none"
-                stroke="hsl(var(--primary)/0.3)"
-                strokeWidth="2"
-                strokeDasharray={pathLength}
-                strokeDashoffset={pathLength}
-                variants={pathVariants}
-                initial="initial"
-                animate="animate"
-                className="path"
-              />
-              <motion.path
-                d="M0,50 C250,20 350,80 500,50 C650,20 750,80 1000,50"
-                fill="none"
-                stroke="hsl(var(--primary)/0.1)"
-                strokeWidth="6"
-                className="path-glow"
-              />
-            </svg>
+        <div className="mt-16 max-w-4xl mx-auto">
+          {/* Vertical Growth Path Timeline */}
+          <div className="relative flex flex-col items-center mb-12">
+            {/* Vertical Growth Path Line */}
+            <div className="absolute h-full w-1 bg-gradient-to-b from-primary/10 via-primary/30 to-primary/10 left-1/2 transform -translate-x-1/2 rounded-full"></div>
             
-            {/* Map points */}
-            {experiences.map((_, index) => (
-              <motion.div
-                key={index}
-                className="absolute top-1/2 transform -translate-y-1/2"
-                style={{ 
-                  left: `${index === 0 ? 10 : index === experiences.length - 1 ? 90 : 50}%`,
-                }}
-                variants={nodeVariants}
-                initial="initial"
-                animate="animate"
-                whileHover="hover"
-                custom={index}
-                onMouseEnter={() => setHoveredNode(index)}
-                onMouseLeave={() => setHoveredNode(null)}
-              >
-                <div 
-                  className={`w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 ${
-                    activeExperience === index ? 'bg-primary shadow-lg shadow-primary/30' : 'bg-secondary border border-primary/30'
-                  }`}
-                  onClick={() => setActiveExperience(index)}
-                >
-                  <MapPin className={`h-4 w-4 ${activeExperience === index ? 'text-primary-foreground' : 'text-primary'}`} />
-                </div>
-                
-                {hoveredNode === index && (
-                  <motion.div 
-                    className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-card p-2 rounded-lg shadow-lg z-10 whitespace-nowrap premium-glass"
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                  >
-                    <span className="text-sm font-medium">{experiences[index].title}</span>
-                  </motion.div>
-                )}
-              </motion.div>
-            ))}
-          </div>
+            {/* "Start" indicator */}
+            <motion.div 
+              className="relative z-10 mb-12 premium-glass rounded-full px-5 py-2 border border-primary/20"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <span className="text-sm font-medium text-primary">Career Start</span>
+            </motion.div>
 
-          {/* Experience cards */}
-          <div className="relative grid grid-cols-1 gap-14 mt-8">
-            {experiences.map((exp, index) => (
-              <motion.div
-                key={index}
-                className="appear-animate relative"
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true }}
-                custom={index}
-                variants={cardVariants}
-              >
-                {/* Connect line between cards */}
-                {index < experiences.length - 1 && (
-                  <div className="absolute left-7 top-full w-0.5 h-14 bg-gradient-to-b from-primary/50 to-transparent"></div>
-                )}
-                
-                {/* Stage indicator for mobile */}
-                <div className="md:hidden absolute left-0 top-0 flex flex-col items-center">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                    activeExperience === index ? 'bg-primary shadow-lg' : 'bg-secondary border border-primary/30'
-                  }`}>
-                    <MapPin className={`h-3 w-3 ${activeExperience === index ? 'text-primary-foreground' : 'text-primary'}`} />
-                  </div>
-                  {index < experiences.length - 1 && (
-                    <div className="w-0.5 h-full bg-gradient-to-b from-primary/50 to-transparent absolute top-6"></div>
-                  )}
-                </div>
-                
-                <Card 
-                  className={`overflow-hidden premium-glass transition-all duration-500 hover-lift group ${
-                    activeExperience === index ? 'border-primary/40 shadow-xl shadow-primary/10' : 'border-2 hover:border-primary/30'
-                  }`}
-                  onClick={() => setActiveExperience(activeExperience === index ? null : index)}
+            {/* Experience Cards (Vertical Timeline) */}
+            <div className="relative grid grid-cols-1 gap-24 w-full">
+              {experiences.map((exp, index) => (
+                <motion.div
+                  key={index}
+                  className="appear-animate relative"
+                  initial="initial"
+                  whileInView="animate"
+                  viewport={{ once: true, margin: "-100px" }}
+                  custom={index}
+                  variants={cardVariants}
                 >
-                  <CardContent className="p-0">
-                    <div className="p-7 relative">
-                      {/* Top gradient decoration */}
-                      <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary/50 via-accent to-primary/20"></div>
-                      
-                      <div className="flex flex-col md:flex-row md:items-center gap-5">
-                        <motion.div 
-                          whileHover={{ rotate: [0, -3, 3, -3, 0], scale: 1.05 }}
-                          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                          className="flex-shrink-0"
-                        >
-                          {companyLogos[exp.logo]}
-                        </motion.div>
+                  {/* Timeline Node */}
+                  <motion.div
+                    className="absolute left-1/2 transform -translate-x-1/2 -top-12 z-10"
+                    variants={nodeVariants}
+                    initial="initial"
+                    whileInView="animate"
+                    whileHover="hover"
+                    viewport={{ once: true }}
+                    custom={index}
+                    onMouseEnter={() => setHoveredNode(index)}
+                    onMouseLeave={() => setHoveredNode(null)}
+                  >
+                    <div 
+                      className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 ${
+                        activeExperience === index ? 'bg-primary shadow-lg shadow-primary/30' : 'bg-secondary border-2 border-primary/30'
+                      }`}
+                      onClick={() => setActiveExperience(index === activeExperience ? null : index)}
+                    >
+                      {index === 0 ? (
+                        <MapPin className={`h-5 w-5 ${activeExperience === index ? 'text-primary-foreground' : 'text-primary'}`} />
+                      ) : (
+                        <ArrowUp className={`h-5 w-5 ${activeExperience === index ? 'text-primary-foreground' : 'text-primary'}`} />
+                      )}
+                    </div>
+                    
+                    {hoveredNode === index && (
+                      <motion.div 
+                        className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 p-2 rounded-lg shadow-lg z-20 whitespace-nowrap premium-glass"
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                      >
+                        <span className="text-sm font-medium">{exp.title}</span>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                  
+                  {/* Card with arrow pointing to timeline */}
+                  <Card 
+                    className={`overflow-hidden premium-glass transition-all duration-500 hover-lift group mt-6 ${
+                      activeExperience === index ? 'border-primary/40 shadow-xl shadow-primary/10' : 'border-2 hover:border-primary/30'
+                    }`}
+                  >
+                    <CardContent className="p-0">
+                      <div className="p-7 relative">
+                        {/* Top decoration */}
+                        <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary/50 via-accent to-primary/20"></div>
                         
-                        <div className="flex-grow">
-                          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                            <div>
-                              <h3 className="text-2xl font-bold text-foreground/90 group-hover:text-primary transition-colors flex items-center gap-2">
-                                {exp.title}
-                                <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                              </h3>
-                              <div className="flex items-center gap-1.5 text-lg text-primary/80 font-medium">
-                                <Briefcase className="h-4 w-4" />
-                                <span>{exp.company}</span>
+                        <div className="flex flex-col md:flex-row md:items-center gap-5">
+                          <motion.div 
+                            whileHover={{ rotate: [0, -3, 3, -3, 0], scale: 1.05 }}
+                            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                            className="flex-shrink-0"
+                          >
+                            {companyLogos[exp.logo]}
+                          </motion.div>
+                          
+                          <div className="flex-grow">
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                              <div>
+                                <h3 className="text-2xl font-bold text-foreground/90 group-hover:text-primary transition-colors flex items-center gap-2">
+                                  {exp.title}
+                                  <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </h3>
+                                <div className="flex items-center gap-1.5 text-lg text-primary/80 font-medium">
+                                  <Briefcase className="h-4 w-4" />
+                                  <span>{exp.company}</span>
+                                </div>
+                              </div>
+                              
+                              <div className="flex items-center gap-1.5 text-sm text-muted-foreground bg-secondary/80 px-4 py-1.5 rounded-full shadow-sm">
+                                <Calendar className="h-4 w-4" />
+                                <span>{exp.period}</span>
                               </div>
                             </div>
                             
-                            <div className="flex items-center gap-1.5 text-sm text-muted-foreground bg-secondary/80 px-4 py-1.5 rounded-full shadow-sm">
-                              <Calendar className="h-4 w-4" />
-                              <span>{exp.period}</span>
-                            </div>
+                            <p className="text-muted-foreground mt-4 text-lg">{exp.description}</p>
                           </div>
-                          
-                          <p className="text-muted-foreground mt-4 text-lg">{exp.description}</p>
                         </div>
-                      </div>
-                      
-                      <Collapsible
-                        open={activeExperience === index}
-                        className="mt-6"
-                      >
-                        <CollapsibleTrigger asChild>
-                          <button className="w-full py-2.5 px-5 bg-secondary/50 rounded-xl hover:bg-secondary/80 transition-all text-base flex items-center justify-between">
-                            <span className="font-medium">Key Projects</span>
-                            <ChevronRight 
-                              className={`h-5 w-5 text-primary transition-transform duration-300 ${
-                                activeExperience === index ? 'rotate-90' : ''
-                              }`} 
-                            />
-                          </button>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="pt-7 animate-accordion-down">
-                          <div className="relative pl-8">
-                            {/* Left timeline for projects */}
-                            <div className="absolute top-0 bottom-0 left-0 w-0.5 bg-gradient-to-b from-primary/40 via-primary/20 to-transparent"></div>
-                            
-                            <div className="space-y-10">
-                              {exp.projects.map((project, pIdx) => (
-                                <motion.div 
-                                  key={pIdx} 
-                                  className="relative"
-                                  initial={{ opacity: 0, x: -10 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: pIdx * 0.2, ease: [0.22, 1, 0.36, 1] }}
-                                >
-                                  {/* Project dot */}
-                                  <div className="absolute left-[-25px] top-0 w-5 h-5 rounded-full bg-primary/20 border-2 border-primary/50 shadow-sm"></div>
-                                  
-                                  <h4 className="font-semibold text-xl mb-3 flex items-center gap-2">
-                                    <Route className="h-5 w-5 text-primary" />
-                                    {project.title}
-                                  </h4>
-                                  <p className="text-muted-foreground mb-4 text-base">{project.description}</p>
-                                  
-                                  {/* Technologies */}
-                                  <div className="flex flex-wrap gap-2.5 mb-4">
-                                    {project.technologies.map((tech, tIdx) => (
-                                      <Badge 
-                                        key={tIdx} 
-                                        variant="secondary"
-                                        className="bg-secondary/70 hover:bg-primary/10 hover:text-primary transition-colors text-sm px-3 py-1"
-                                      >
-                                        {tech}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                  
-                                  {/* Achievements */}
-                                  {project.achievements && project.achievements.length > 0 && (
-                                    <div className="mt-4 bg-secondary/30 p-4 rounded-xl premium-glass">
-                                      <h5 className="text-base font-medium flex items-center gap-1.5 mb-3">
-                                        <Award className="h-4 w-4 text-primary" />
-                                        Key Achievements:
-                                      </h5>
-                                      <ul className="space-y-2">
-                                        {project.achievements.map((achievement, aIdx) => (
-                                          <li 
-                                            key={aIdx} 
-                                            className="text-base text-muted-foreground pl-5 relative"
-                                          >
-                                            <span className="absolute left-0 top-2.5 w-2 h-2 rounded-full bg-primary/40"></span>
-                                            {achievement}
-                                          </li>
-                                        ))}
-                                      </ul>
+                        
+                        <Collapsible
+                          open={activeExperience === index}
+                          className="mt-6"
+                        >
+                          <CollapsibleTrigger asChild>
+                            <button className="w-full py-2.5 px-5 bg-secondary/50 rounded-xl hover:bg-secondary/80 transition-all text-base flex items-center justify-between">
+                              <span className="font-medium">Key Projects</span>
+                              <ChevronRight 
+                                className={`h-5 w-5 text-primary transition-transform duration-300 ${
+                                  activeExperience === index ? 'rotate-90' : ''
+                                }`} 
+                              />
+                            </button>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="pt-7 animate-accordion-down">
+                            <div className="relative pl-8">
+                              {/* Left timeline for projects */}
+                              <div className="absolute top-0 bottom-0 left-0 w-0.5 bg-gradient-to-b from-primary/40 via-primary/20 to-transparent"></div>
+                              
+                              <div className="space-y-10">
+                                {exp.projects.map((project, pIdx) => (
+                                  <motion.div 
+                                    key={pIdx} 
+                                    className="relative"
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: pIdx * 0.2, ease: [0.22, 1, 0.36, 1] }}
+                                  >
+                                    {/* Project dot */}
+                                    <div className="absolute left-[-25px] top-0 w-5 h-5 rounded-full bg-primary/20 border-2 border-primary/50 shadow-sm"></div>
+                                    
+                                    <h4 className="font-semibold text-xl mb-3 flex items-center gap-2">
+                                      <Route className="h-5 w-5 text-primary" />
+                                      {project.title}
+                                    </h4>
+                                    <p className="text-muted-foreground mb-4 text-base">{project.description}</p>
+                                    
+                                    {/* Technologies */}
+                                    <div className="flex flex-wrap gap-2.5 mb-4">
+                                      {project.technologies.map((tech, tIdx) => (
+                                        <Badge 
+                                          key={tIdx} 
+                                          variant="secondary"
+                                          className="bg-secondary/70 hover:bg-primary/10 hover:text-primary transition-colors text-sm px-3 py-1"
+                                        >
+                                          {tech}
+                                        </Badge>
+                                      ))}
                                     </div>
-                                  )}
-                                </motion.div>
-                              ))}
+                                    
+                                    {/* Achievements */}
+                                    {project.achievements && project.achievements.length > 0 && (
+                                      <div className="mt-4 bg-secondary/30 p-4 rounded-xl premium-glass">
+                                        <h5 className="text-base font-medium flex items-center gap-1.5 mb-3">
+                                          <Award className="h-4 w-4 text-primary" />
+                                          Key Achievements:
+                                        </h5>
+                                        <ul className="space-y-2">
+                                          {project.achievements.map((achievement, aIdx) => (
+                                            <li 
+                                              key={aIdx} 
+                                              className="text-base text-muted-foreground pl-5 relative"
+                                            >
+                                              <span className="absolute left-0 top-2.5 w-2 h-2 rounded-full bg-primary/40"></span>
+                                              {achievement}
+                                            </li>
+                                          ))}
+                                        </ul>
+                                      </div>
+                                    )}
+                                  </motion.div>
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        </CollapsibleContent>
-                      </Collapsible>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* "Future" indicator */}
+            <motion.div 
+              className="relative z-10 mt-12 premium-glass rounded-full px-5 py-2 border border-primary/20"
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <span className="text-sm font-medium text-primary">Future Growth...</span>
+            </motion.div>
           </div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+
 @keyframes bounce {
   0%, 100% {
     transform: translateY(0) translateX(-50%);
@@ -10,6 +11,34 @@
 /* Growth Path SVG Animation */
 .path-glow {
   filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.4));
+}
+
+/* Growth Timeline Animation */
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.6;
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+  }
+}
+
+.timeline-node {
+  animation: pulse-glow 3s infinite ease-in-out;
+}
+
+.timeline-path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: dash 3s ease-in-out forwards;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 /* Premium Glass Effect */
@@ -45,4 +74,25 @@
 
 .apple-button:active {
   transform: scale(0.98);
+}
+
+/* Hover lift effect for cards */
+.hover-lift {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), 
+              box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+}
+
+/* Growth Path Vertical Line Animation */
+.growth-line-vertical {
+  background: linear-gradient(to bottom, 
+    rgba(59, 130, 246, 0) 0%, 
+    rgba(59, 130, 246, 0.5) 30%,
+    rgba(59, 130, 246, 0.5) 70%, 
+    rgba(59, 130, 246, 0) 100%);
 }
