@@ -1,4 +1,3 @@
-
 @keyframes bounce {
   0%, 100% {
     transform: translateY(0) translateX(-50%);
@@ -6,6 +5,11 @@
   50% {
     transform: translateY(-10px) translateX(-50%);
   }
+}
+
+/* Growth Path SVG Animation */
+.path-glow {
+  filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.4));
 }
 
 /* Premium Glass Effect */
