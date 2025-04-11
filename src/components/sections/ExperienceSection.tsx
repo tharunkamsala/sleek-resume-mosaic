@@ -2,9 +2,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Briefcase, Calendar, ChevronRight, Award } from "lucide-react";
-import { motion } from "framer-motion";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Briefcase, Calendar, Award, ArrowUpCircle, CheckCircle2, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Experience {
   title: string;
@@ -22,7 +22,7 @@ interface Experience {
 
 const ExperienceSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const [activeExperience, setActiveExperience] = useState<number | null>(0);
+  const [activeExperience, setActiveExperience] = useState<number | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -92,157 +92,193 @@ const ExperienceSection: React.FC = () => {
 
   const companyLogos: Record<string, React.ReactNode> = {
     IBM: (
-      <div className="h-14 w-14 flex items-center justify-center bg-blue-600 text-white font-bold text-sm rounded-xl shadow-lg">
+      <div className="h-12 w-12 flex items-center justify-center bg-blue-600 text-white font-bold text-sm rounded-xl">
         IBM
       </div>
     )
   };
 
-  const cardVariants = {
-    initial: { opacity: 0, y: 50 },
-    animate: (i: number) => ({
+  const variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
       opacity: 1,
       y: 0,
       transition: {
-        delay: i * 0.15,
-        duration: 0.6,
+        delay: i * 0.1,
+        duration: 0.5,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    })
+  };
+  
+  const projectVariants = {
+    hidden: { opacity: 0, x: -10 },
+    visible: (i: number) => ({
+      opacity: 1,
+      x: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.4,
         ease: [0.22, 1, 0.36, 1]
       }
     })
   };
 
   return (
-    <section id="experience" ref={sectionRef} className="bg-background py-24">
-      <div className="container-section">
-        <h2 className="section-heading appear-animate">Work Experience</h2>
-        <p className="section-subheading appear-animate">
-          My professional journey and notable projects I've worked on.
+    <section id="experience" ref={sectionRef} className="py-24 bg-gradient-to-b from-background to-background/50">
+      <div className="container max-w-5xl mx-auto px-6">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-3 appear-animate premium-text-gradient">
+          Work Experience
+        </h2>
+        <p className="text-muted-foreground text-center mb-16 max-w-2xl mx-auto appear-animate">
+          My professional journey and notable achievements along the way.
         </p>
 
-        <div className="mt-16 max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 gap-14">
+        <div className="relative">
+          {/* Vertical timeline line */}
+          <div className="absolute left-0 md:left-1/2 transform md:translate-x-[-50%] top-0 bottom-0 w-1 bg-gradient-to-b from-primary/20 via-primary/40 to-primary/10 rounded-full"></div>
+
+          <div className="space-y-12">
             {experiences.map((exp, index) => (
               <motion.div
                 key={index}
-                className="appear-animate"
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true }}
+                className="relative"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
                 custom={index}
-                variants={cardVariants}
+                variants={variants}
               >
-                <Card 
-                  className="overflow-hidden apple-card border-2 hover:border-primary/30 hover-lift group"
-                  onClick={() => setActiveExperience(activeExperience === index ? null : index)}
-                >
-                  <CardContent className="p-0">
-                    <div className="p-7 relative">
-                      {/* Top gradient decoration */}
-                      <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary/50 via-accent to-primary/20"></div>
-                      
-                      <div className="flex flex-col md:flex-row md:items-center gap-5">
-                        <motion.div 
-                          whileHover={{ rotate: [0, -3, 3, -3, 0], scale: 1.05 }}
-                          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                          className="flex-shrink-0"
-                        >
-                          {companyLogos[exp.logo]}
-                        </motion.div>
+                {/* Timeline node */}
+                <div className="absolute left-[-14px] md:left-1/2 md:transform md:translate-x-[-50%] w-7 h-7 rounded-full bg-background border-2 border-primary/60 shadow-[0_0_15px_rgba(147,51,234,0.3)] z-10">
+                  {index === 0 ? 
+                    <ArrowUpCircle className="w-full h-full text-primary p-0.5" /> :
+                    <CheckCircle2 className="w-full h-full text-primary p-0.5" />
+                  }
+                </div>
+
+                {/* Card - alternating sides on larger screens */}
+                <div className={`relative ml-8 md:ml-0 md:w-[46%] ${index % 2 === 0 ? 'md:mr-auto' : 'md:ml-auto'}`}>
+                  <Card 
+                    className="premium-glass group transition-all duration-300 overflow-hidden hover:shadow-lg hover:shadow-primary/5 border-primary/10 hover:border-primary/20"
+                  >
+                    <CardContent className="p-0">
+                      <div className="p-6">
+                        {/* Top decoration */}
+                        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/30 via-primary/60 to-primary/30"></div>
                         
-                        <div className="flex-grow">
-                          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                            <div>
-                              <h3 className="text-2xl font-bold text-foreground/90 group-hover:text-primary transition-colors">
-                                {exp.title}
-                              </h3>
-                              <div className="flex items-center gap-1.5 text-lg text-primary/80 font-medium">
-                                <Briefcase className="h-4 w-4" />
+                        <div className="flex items-start gap-4">
+                          <motion.div 
+                            whileHover={{ scale: 1.05 }}
+                            className="flex-shrink-0 mt-1"
+                          >
+                            {companyLogos[exp.logo]}
+                          </motion.div>
+                          
+                          <div className="flex-1">
+                            <h3 className="text-xl font-semibold mb-1 text-foreground group-hover:text-primary transition-colors">
+                              {exp.title}
+                            </h3>
+                            
+                            <div className="flex flex-wrap items-center gap-3 mb-3">
+                              <div className="flex items-center gap-1 text-sm text-primary/90">
+                                <Briefcase className="h-3.5 w-3.5" />
                                 <span>{exp.company}</span>
+                              </div>
+                              
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground bg-secondary/50 px-3 py-1 rounded-full">
+                                <Calendar className="h-3 w-3" />
+                                <span>{exp.period}</span>
                               </div>
                             </div>
                             
-                            <div className="flex items-center gap-1.5 text-sm text-muted-foreground bg-secondary/80 px-4 py-1.5 rounded-full shadow-sm">
-                              <Calendar className="h-4 w-4" />
-                              <span>{exp.period}</span>
+                            <p className="text-muted-foreground text-sm mb-4">{exp.description}</p>
+                            
+                            {/* Key Projects Section */}
+                            <div className="mt-4">
+                              <div 
+                                className="flex items-center gap-1.5 mb-3 text-sm font-medium cursor-pointer text-primary/80 hover:text-primary"
+                                onClick={() => setActiveExperience(activeExperience === index ? null : index)}
+                              >
+                                <span>Key Projects</span>
+                                <ChevronRight className={`h-4 w-4 transform transition-transform ${activeExperience === index ? 'rotate-90' : ''}`} />
+                              </div>
+                              
+                              <AnimatePresence>
+                                {activeExperience === index && (
+                                  <motion.div 
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="space-y-6"
+                                  >
+                                    {exp.projects.map((project, pIdx) => (
+                                      <motion.div 
+                                        key={pIdx} 
+                                        className="relative pl-5 border-l-2 border-primary/20"
+                                        initial="hidden"
+                                        animate="visible"
+                                        custom={pIdx}
+                                        variants={projectVariants}
+                                      >
+                                        <div className="absolute left-[-5px] top-1 w-2 h-2 rounded-full bg-primary/40"></div>
+                                        
+                                        <HoverCard>
+                                          <HoverCardTrigger asChild>
+                                            <h4 className="font-medium text-base cursor-help">
+                                              {project.title}
+                                            </h4>
+                                          </HoverCardTrigger>
+                                          <HoverCardContent className="w-80 premium-glass border-primary/20">
+                                            <h5 className="font-semibold mb-2">{project.title}</h5>
+                                            <p className="text-sm text-muted-foreground">{project.description}</p>
+                                          </HoverCardContent>
+                                        </HoverCard>
+                                        
+                                        <div className="flex flex-wrap gap-1.5 my-2">
+                                          {project.technologies.map((tech, tIdx) => (
+                                            <Badge 
+                                              key={tIdx} 
+                                              variant="secondary"
+                                              className="text-xs px-2 py-0 h-5 bg-secondary/40 hover:bg-primary/10"
+                                            >
+                                              {tech}
+                                            </Badge>
+                                          ))}
+                                        </div>
+                                        
+                                        {project.achievements && project.achievements.length > 0 && (
+                                          <div className="mt-2">
+                                            <div className="flex items-center gap-1.5 text-xs font-medium text-foreground/80 mb-1">
+                                              <Award className="h-3 w-3 text-primary/70" />
+                                              <span>Achievements:</span>
+                                            </div>
+                                            <ul className="space-y-1 text-xs text-muted-foreground">
+                                              {project.achievements.map((achievement, aIdx) => (
+                                                <li 
+                                                  key={aIdx} 
+                                                  className="flex items-start gap-1.5"
+                                                >
+                                                  <span className="mt-1.5 w-1 h-1 rounded-full bg-primary/30 flex-shrink-0"></span>
+                                                  <span>{achievement}</span>
+                                                </li>
+                                              ))}
+                                            </ul>
+                                          </div>
+                                        )}
+                                      </motion.div>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
                             </div>
                           </div>
-                          
-                          <p className="text-muted-foreground mt-4 text-lg">{exp.description}</p>
                         </div>
                       </div>
-                      
-                      <Accordion 
-                        type="single" 
-                        collapsible
-                        value={activeExperience === index ? "projects" : ""}
-                        className="mt-5"
-                      >
-                        <AccordionItem value="projects" className="border-none">
-                          <AccordionTrigger className="py-2.5 px-5 bg-secondary/50 rounded-xl hover:bg-secondary/80 transition-all text-base">
-                            <span className="font-medium">Key Projects</span>
-                          </AccordionTrigger>
-                          
-                          <AccordionContent className="pt-7">
-                            <div className="space-y-10">
-                              {exp.projects.map((project, pIdx) => (
-                                <motion.div 
-                                  key={pIdx} 
-                                  className="relative pl-7 border-l-2 border-primary/30"
-                                  initial={{ opacity: 0, x: -10 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: pIdx * 0.2, ease: [0.22, 1, 0.36, 1] }}
-                                >
-                                  {/* Project dot */}
-                                  <div className="absolute left-[-10px] top-0 w-5 h-5 rounded-full bg-primary/20 border-2 border-primary/50 shadow-sm"></div>
-                                  
-                                  <h4 className="font-semibold text-xl mb-3 flex items-center gap-2">
-                                    <ChevronRight className="h-5 w-5 text-primary" />
-                                    {project.title}
-                                  </h4>
-                                  <p className="text-muted-foreground mb-4 text-base">{project.description}</p>
-                                  
-                                  {/* Technologies */}
-                                  <div className="flex flex-wrap gap-2.5 mb-4">
-                                    {project.technologies.map((tech, tIdx) => (
-                                      <Badge 
-                                        key={tIdx} 
-                                        variant="secondary"
-                                        className="bg-secondary/70 hover:bg-primary/10 hover:text-primary transition-colors text-sm px-3 py-1"
-                                      >
-                                        {tech}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                  
-                                  {/* Achievements */}
-                                  {project.achievements && project.achievements.length > 0 && (
-                                    <div className="mt-4 bg-secondary/30 p-4 rounded-xl">
-                                      <h5 className="text-base font-medium flex items-center gap-1.5 mb-3">
-                                        <Award className="h-4 w-4 text-primary" />
-                                        Key Achievements:
-                                      </h5>
-                                      <ul className="space-y-2">
-                                        {project.achievements.map((achievement, aIdx) => (
-                                          <li 
-                                            key={aIdx} 
-                                            className="text-base text-muted-foreground pl-5 relative"
-                                          >
-                                            <span className="absolute left-0 top-2.5 w-2 h-2 rounded-full bg-primary/40"></span>
-                                            {achievement}
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    </div>
-                                  )}
-                                </motion.div>
-                              ))}
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </div>
               </motion.div>
             ))}
           </div>
